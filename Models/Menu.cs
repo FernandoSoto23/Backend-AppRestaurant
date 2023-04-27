@@ -61,8 +61,8 @@ namespace ServicioRestaurante.Models
         public static ListaMenu ListarMenu(int TipoMenu)
         {
             Datos.Conectar();
-            string Cadena = $"select * from platillo where tipoMenu = {TipoMenu}";
-            SqlCommand cmd = new SqlCommand(Cadena, Datos.conx);
+            SqlCommand cmd = new SqlCommand("SELECT * FROM platillo WHERE tipoMenu = @TipoMenu",Datos.conx);
+            cmd.Parameters.AddWithValue("@TipoMenu", TipoMenu);
             SqlDataReader dr;
             dr = cmd.ExecuteReader();
             ListaMenu lista = new ListaMenu();
@@ -94,8 +94,8 @@ namespace ServicioRestaurante.Models
         public static Menu Orden(int codigo)
         {
             Datos.Conectar();
-            string Cadena = $"select * from platillo where codigo = {codigo}";
-            SqlCommand cmd = new SqlCommand(Cadena, Datos.conx);
+            SqlCommand cmd = new SqlCommand("SELECT * FROM platillo WHERE codigo = @codigo", Datos.conx);
+            cmd.Parameters.AddWithValue("@codigo", codigo);
             SqlDataReader dr;
             dr = cmd.ExecuteReader();
             ListaMenu lista = new ListaMenu();
@@ -119,6 +119,63 @@ namespace ServicioRestaurante.Models
             return orden;
         }
 
+        public static void Guardar(Menu entidad)
+        {
+            Datos.Conectar();
+            string cadena = "INSERT INTO platillo(codigo,titulo,imagen,precio,descripcion,tipomenu)";
+            cadena += "VALUES(@codigo,@titulo,@imagen,@precio,@descripcion,@tipomenu)";
+            SqlCommand cmd = new SqlCommand(cadena, Datos.conx);
+            cmd.Parameters.AddWithValue("@codigo", entidad.Codigo);
+            cmd.Parameters.AddWithValue("@titulo", entidad.Titulo);
+            cmd.Parameters.AddWithValue("@imagen", entidad.Imagen);
+            cmd.Parameters.AddWithValue("@precio", entidad.Precio);
+            cmd.Parameters.AddWithValue("@descripcion", entidad.Descripcion);
+            cmd.Parameters.AddWithValue("@tipomenu", entidad.TipoMenu);
+
+            try
+            {
+                cmd.ExecuteNonQuery();
+                Datos.Desconectar();
+            }
+            catch (Exception error)
+            {
+
+                throw error;
+                Datos.Desconectar();
+            }
+
+
+            
+        }
+        public static void Actualizar(Menu entidad)
+        {
+            Datos.Conectar();
+            string cadena = "UPDATE platillo SET titulo = @titulo,imagen = @imagen,precio = @precio,descripcion = @descripcion,tipomenu = @tipomenu ";
+            cadena += "WHERE codigo = @codigo";
+
+            SqlCommand cmd = new SqlCommand(cadena, Datos.conx);
+            cmd.Parameters.AddWithValue("@codigo", entidad.Codigo);
+            cmd.Parameters.AddWithValue("@titulo", entidad.Titulo);
+            cmd.Parameters.AddWithValue("@imagen", entidad.Imagen);
+            cmd.Parameters.AddWithValue("@precio", entidad.Precio);
+            cmd.Parameters.AddWithValue("@descripcion", entidad.Descripcion);
+            cmd.Parameters.AddWithValue("@tipomenu", entidad.TipoMenu);
+
+            try
+            {
+                cmd.ExecuteNonQuery();
+                Datos.Desconectar();
+            }
+            catch (Exception error)
+            {
+
+                throw error;
+                Datos.Desconectar();
+            }
+
+
+
+        }
 
     }
 

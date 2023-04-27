@@ -38,5 +38,19 @@ namespace ServicioRestaurante.Controllers
             orden = Menu.Orden(codigo);
             return orden;
         }
+
+        [HttpPost]
+        [Route("Guardar")]
+        public void Guardar([FromBody]Menu entidad)
+        {
+           Menu.Guardar(entidad);
+        }
+
+        [HttpPost]
+        [Route("Actualizar")]
+        public void Actualizar([FromBody] Menu entidad)
+        {
+            Menu.Actualizar(entidad);
+        }
     }
 }

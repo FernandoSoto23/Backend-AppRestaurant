@@ -46,6 +46,25 @@ namespace ServicioRestaurante.Models
             Datos.Desconectar();
             return u;
         }
+        public static bool CheckToken(string token)
+        {
+            bool verificar = false;
+            Datos.Conectar();
+            Usuario usuario = new Usuario();
+            SqlDataReader dr;
+            SqlCommand cmd = new SqlCommand("select * from usuario where token = @token", Datos.conx);
+            cmd.Parameters.AddWithValue("@token", token);
+            dr = cmd.ExecuteReader();
+
+            if (dr.Read())
+            {
+                verificar = true;
+            }
+            Datos.Desconectar();
+            return verificar;
+        }   
     }
+
+
 }
 

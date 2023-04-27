@@ -17,7 +17,7 @@ namespace ServicioRestaurante.Controllers
             var JSON = new RespuestaJson<Usuario>();
             if (usuario.Token != null)
             {
-                
+                 
                 JSON.Status = true;
                 JSON.Msg= "ok";
                 JSON.Dato = usuario;
@@ -31,6 +31,15 @@ namespace ServicioRestaurante.Controllers
             return JSON;
 
 
+        }
+
+        [HttpGet]
+        [Route("validar")]
+        public bool Validar(string token)
+        {
+            bool validacion;
+            validacion = Models.Usuario.CheckToken(token);
+            return validacion;
         }
     }
 }
