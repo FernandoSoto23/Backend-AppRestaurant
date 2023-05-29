@@ -9,7 +9,7 @@ namespace ServicioRestaurante.Models
 
         public static void Conectar()
         {
-            conx.ConnectionString = "server=localhost\\SQLEXPRESS;database=SekyhRestaurante;user id = sa;password=fernando1234;";
+            conx.ConnectionString = "server=fernandodevdb.database.windows.net;database=SekyhRestaurant;user id = FernandoDev;password=Fernando#23;";
             conx.Open();
         }
 
