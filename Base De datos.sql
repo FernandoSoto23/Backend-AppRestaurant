@@ -1,17 +1,12 @@
 
 
-
-
-
-create database SekyhRestaurante
-
 create table tipoMenu(
 	Codigo int not null primary key identity(1,1),
 	Nombre varchar(150) not null
 );
 
 create table Platillo(
-	Codigo varchar(20) not null primary key,
+	Codigo int not null primary key identity(100101,1),
 	titulo varchar(150) not null,
 	imagen varchar(150),
 	precio numeric(12,2) not null check(precio>0),
@@ -41,7 +36,7 @@ create table Empleado(
 );
 alter table Usuario add [Admin] char(1) check([Admin] = 's' or [Admin] = 'n')
 
-drop table Usuario
+
 select * from Platillo
 
 select * from Usuario
@@ -58,7 +53,7 @@ select * from Usuario
 
 --Creando Procedimientos de almacenado
 
-ALTER PROCEDURE spAddUser(
+CREATE PROCEDURE spAddUser(
 	@nombreCompleto varchar(150),
 	@NombreUsuario varchar(150),
 	@email varchar(150),
@@ -75,4 +70,12 @@ end
 
 spAddUser 'Antonio','Concha','Antonio@gmail.com','1234','66237712123'
 
+
+
 SELECT * FROM usuario
+SELECT * FROM Platillo
+SELECT * FROM tipoMenu
+
+
+
+

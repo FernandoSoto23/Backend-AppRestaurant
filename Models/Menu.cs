@@ -160,8 +160,8 @@ namespace ServicioRestaurante.Models
         public static void Guardar(Menu entidad)
         {
             Datos.Conectar();
-            string cadena = "INSERT INTO platillo(codigo,titulo,imagen,precio,descripcion,tipomenu)";
-            cadena += "VALUES(@codigo,@titulo,@imagen,@precio,@descripcion,@tipomenu)";
+            string cadena = "INSERT INTO platillo(titulo,imagen,precio,descripcion,tipomenu)";
+            cadena += "VALUES(@titulo,@imagen,@precio,@descripcion,@tipomenu)";
             SqlCommand cmd = new SqlCommand(cadena, Datos.conx);
             cmd.Parameters.AddWithValue("@codigo", entidad.Codigo);
             cmd.Parameters.AddWithValue("@titulo", entidad.Titulo);
