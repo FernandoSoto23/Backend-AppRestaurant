@@ -1,4 +1,6 @@
 ﻿using System.Data.SqlClient;
+using System.Net.Mail;
+using System.Net;
 
 namespace ServicioRestaurante.Models
 {
@@ -148,6 +150,50 @@ namespace ServicioRestaurante.Models
             }
             Datos.Desconectar();
 
+        }
+        public static void EnviarCorreo(string correo)
+        {
+            string codigoVerificacion = GenerarCodigoVerificacion(); // Genera el código de verificación
+
+            string remitente = "SekyhSoftware@hotmail.com"; // Cambia esto al correo que hayas creado
+            string destinatario = correo; // Cambia esto al correo del usuario
+
+            EnviarCorreo(remitente, destinatario, "Código de verificación", codigoVerificacion);
+        }
+        private static string GenerarCodigoVerificacion()
+        {
+            string codigo = "";
+            Random NumeroAleatorio = new Random();
+            return codigo = NumeroAleatorio.Next(1000,9999).ToString();
+           
+        }
+
+        private static void EnviarCorreo(string remitente, string destinatario, string asunto, string mensaje)
+        {
+            try
+            {
+                // Configura el cliente SMTP para Hotmail
+                SmtpClient client = new SmtpClient("smtp.office365.com", 587);
+                client.EnableSsl = true;
+                client.UseDefaultCredentials = false;
+                client.Credentials = new NetworkCredential(remitente, "Fernando#23"); // Cambia esto a tu contraseña de Hotmail
+
+                // Crea el mensaje de correo electrónico
+                MailMessage emailMessage = new MailMessage();
+                emailMessage.From = new MailAddress(remitente);
+                emailMessage.To.Add(new MailAddress(destinatario));
+                emailMessage.Subject = asunto;
+                emailMessage.Body = mensaje;
+
+                // Envía el mensaje
+                client.Send(emailMessage);
+
+                Console.WriteLine("El correo se ha enviado exitosamente.");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error al enviar el correo: " + ex.Message);
+            }
         }
         #endregion
 

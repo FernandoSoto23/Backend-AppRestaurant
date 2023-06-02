@@ -96,6 +96,13 @@ namespace ServicioRestaurante.Controllers
 
 
         }
+
+        [HttpGet]
+        [Route("CorreoDeVerificacion")]
+        public void EnviarCorreoDeVerificacion(string email)
+        {
+            UsuarioStandard.EnviarCorreo(email);
+        }
     }
 
         //[HttpPost]

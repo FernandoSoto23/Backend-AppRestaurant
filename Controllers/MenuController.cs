@@ -41,16 +41,23 @@ namespace ServicioRestaurante.Controllers
 
         [HttpPost]
         [Route("Guardar")]
-        public void Guardar([FromBody]Menu entidad)
+        public bool Guardar([FromBody]MenuAdministrador<Menu> entidad)
         {
-           Menu.Guardar(entidad);
+            int id =entidad.Id;
+            string token = entidad.Token;
+            var menu = entidad.Menu;
+            return Menu.CrearNuevoAnuncio(menu,id,token);
+
         }
 
-        [HttpPost]
+        [HttpPut]
         [Route("Actualizar")]
-        public void Actualizar([FromBody] Menu entidad)
+        public bool Actualizar(int codigo,[FromBody] MenuAdministrador<Menu> entidad)
         {
-            Menu.Actualizar(entidad);
+            int id = entidad.Id;
+            string token = entidad.Token;
+            var menu = entidad.Menu;
+            return Menu.Actualizar(menu,codigo,id,token);
         }
     }
 }

@@ -4,6 +4,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Web;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace ServicioRestaurante.Models
 {
@@ -11,7 +12,7 @@ namespace ServicioRestaurante.Models
     {
 
         #region Atributos
-        private string codigo;
+        private int codigo;
         private string titulo;
         private string imagen;
         private double precio;
@@ -21,7 +22,7 @@ namespace ServicioRestaurante.Models
 
         #region Propiedades
 
-        public string Codigo
+        public int Codigo
         {
             get { return codigo; }
             set { codigo = value; }
@@ -71,7 +72,7 @@ namespace ServicioRestaurante.Models
                     if (dr.Read())
                     {
                         Menu menu = new Menu();
-                        menu.Codigo = dr["codigo"].ToString() ?? "vacio";
+                        menu.Codigo = int.Parse(dr["codigo"].ToString());
                         menu.Titulo = dr["Titulo"].ToString() ?? "vacio";
                         menu.Imagen = dr["imagen"].ToString() ?? "vacio";
                         menu.Precio = double.Parse(dr["precio"].ToString() ?? "0");
@@ -111,7 +112,7 @@ namespace ServicioRestaurante.Models
                 if (dr.Read())
                 {
                     Menu menu = new Menu();
-                    menu.Codigo = dr["codigo"].ToString();
+                    menu.Codigo = int.Parse(dr["codigo"].ToString());
                     menu.Titulo = dr["Titulo"].ToString();
                     menu.Imagen = dr["imagen"].ToString();
                     menu.Precio = double.Parse(dr["precio"].ToString());
@@ -143,7 +144,7 @@ namespace ServicioRestaurante.Models
             if (dr.Read())
             {
 
-                orden.Codigo = dr["codigo"].ToString() ?? "";
+                orden.Codigo = int.Parse(dr["codigo"].ToString());
                 orden.Titulo = dr["Titulo"].ToString() ?? "";
                 orden.Imagen = dr["imagen"].ToString() ?? "";
                 orden.Precio = double.Parse(dr["precio"].ToString() ?? "0");
@@ -157,13 +158,13 @@ namespace ServicioRestaurante.Models
             Datos.Desconectar();
             return orden;
         }
-        public static void Guardar(Menu entidad)
+        public static bool CrearNuevoAnuncio(Menu entidad,int id,string token)
         {
             Datos.Conectar();
-            string cadena = "INSERT INTO platillo(titulo,imagen,precio,descripcion,tipomenu)";
-            cadena += "VALUES(@titulo,@imagen,@precio,@descripcion,@tipomenu)";
+            string cadena = "spAddPlatillo @id,@token,@titulo,@imagen,@precio,@descripcion,@tipomenu";
             SqlCommand cmd = new SqlCommand(cadena, Datos.conx);
-            cmd.Parameters.AddWithValue("@codigo", entidad.Codigo);
+            cmd.Parameters.AddWithValue("@id",id);
+            cmd.Parameters.AddWithValue("@token",token);
             cmd.Parameters.AddWithValue("@titulo", entidad.Titulo);
             cmd.Parameters.AddWithValue("@imagen", entidad.Imagen);
             cmd.Parameters.AddWithValue("@precio", entidad.Precio);
@@ -174,25 +175,28 @@ namespace ServicioRestaurante.Models
             {
                 cmd.ExecuteNonQuery();
                 Datos.Desconectar();
+                return true;
             }
             catch (Exception error)
             {
-
-                throw error;
+               
+                Console.WriteLine(error);
                 Datos.Desconectar();
+                return false;
             }
 
 
 
         }
-        public static void Actualizar(Menu entidad)
+        public static bool Actualizar(Menu entidad,int codigo,int id,string token)
         {
             Datos.Conectar();
-            string cadena = "UPDATE platillo SET titulo = @titulo,imagen = @imagen,precio = @precio,descripcion = @descripcion,tipomenu = @tipomenu ";
-            cadena += "WHERE codigo = @codigo";
+            string cadena = "spUpdatePlatillo @id,@token,@codigo,@titulo,@imagen,@precio,@descripcion,@tipomenu";
 
             SqlCommand cmd = new SqlCommand(cadena, Datos.conx);
-            cmd.Parameters.AddWithValue("@codigo", entidad.Codigo);
+            cmd.Parameters.AddWithValue("@id", id);
+            cmd.Parameters.AddWithValue("@token", token);
+            cmd.Parameters.AddWithValue("@codigo", codigo);
             cmd.Parameters.AddWithValue("@titulo", entidad.Titulo);
             cmd.Parameters.AddWithValue("@imagen", entidad.Imagen);
             cmd.Parameters.AddWithValue("@precio", entidad.Precio);
@@ -203,12 +207,14 @@ namespace ServicioRestaurante.Models
             {
                 cmd.ExecuteNonQuery();
                 Datos.Desconectar();
+                return true;
             }
             catch (Exception error)
             {
 
-                throw error;
+                Console.WriteLine(error);
                 Datos.Desconectar();
+                return false;
             }
 
 
@@ -219,7 +225,38 @@ namespace ServicioRestaurante.Models
 
     }
 
+    public class MenuAdministrador<Type>
+    {
+        #region Atributos   
+        private int id;
+        private string token;
+        private Type menu;
+        #endregion
 
+        #region Propiedades
+        public int Id
+        {
+            get { return id; }
+            set { id = value; }
+        }
+        public string Token
+        {
+            get { return token; }
+            set { token = value; }
+        }
+        public Type Menu
+        {
+            get { return menu; }
+            set { menu = value; }
+        }
+        #endregion
+
+        #region Metodos
+        
+        #endregion
+
+
+    }
     public class ListaMenu : List<Menu>
     {
 
